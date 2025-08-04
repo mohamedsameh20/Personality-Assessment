@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+        #log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>Admin Dashboard Debug Page</h1>
+    
+    <div id="tests">
+        <div class="test-result info">Running diagnostics...</div>
+    </div>
+    
+    <h2>Console Log</h2>
+    <div id="log"></div>
+    
+    <script>
+        const log = document.getElementById('log');
+        const tests = document.getElementById('tests');
+        
+        function logMessage(message) {
+            console.log(message);
+            log.textContent += new Date().toLocaleTimeString() + ': ' + message + '\n';
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        function addTestResult(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.textContent = message;
+            tests.appendChild(div);
+        }
+        
+        async function runDiagnostics() {
+            logMessage('Starting diagnostic tests...');
+            
+            // Test 1: Check API connectivity
+            try {
+                logMessage('Testing API connectivity...');
+                const response = await fetch('/api/admin/stats');
+                if (response.ok) {
+                    const data = await response.json();
+                    addTestResult('✓ API is accessible', 'success');
+                    logMessage('API response: ' + JSON.stringify(data, null, 2));
+                } else {
+                    addTestResult(`✗ API returned ${response.status}: ${response.statusText}`, 'error');
+                    logMessage(`API error: ${response.status} ${response.statusText}`);
+                }
+            } catch (error) {
+                addTestResult('✗ Failed to connect to API: ' + error.message, 'error');
+                logMessage('API connection error: ' + error.message);
+            }
+            
+            // Test 3: Check personality network endpoint
+            try {
+                logMessage('Testing personality network endpoint...');
+                const response = await fetch('/api/admin/personality-network?similarityThreshold=75');
+                if (response.ok) {
+                    const data = await response.json();
+                    addTestResult(`✓ Personality network endpoint works (${data.totalUsers} users, ${data.totalConnections} connections)`, 'success');
+                    logMessage('Network data: ' + JSON.stringify(data, null, 2));
+                } else {
+                    addTestResult(`✗ Personality network endpoint error: ${response.status}`, 'error');
+                    logMessage(`Network endpoint error: ${response.status} ${response.statusText}`);
+                }
+            } catch (error) {
+                addTestResult('✗ Failed to test personality network endpoint: ' + error.message, 'error');
+                logMessage('Network endpoint error: ' + error.message);
+            }
+            
+            logMessage('Diagnostic tests completed');
+        }
+        
+        // Start diagnostics when page loads
+        window.addEventListener('load', runDiagnostics);
+    </script>
+</body>
+</html>

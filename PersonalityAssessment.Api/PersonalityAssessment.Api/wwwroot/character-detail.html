@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Analysis - Personality Assessment</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .navigation {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .nav-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            margin: 0 8px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .character-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .character-profile {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .character-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 25px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 72px;
+            color: #667eea;
+            font-weight: bold;
+            overflow: hidden;
+        }
+
+        .character-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .character-name {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d3748;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .character-show {
+            font-size: 16px;
+            color: #667eea;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .character-description {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #4a5568;
+            margin-bottom: 25px;
+        }
+
+        .character-analysis {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #2d3748;
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .visualization-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .panel-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-bottom: 30px;
+        }
+
+        .comparison-controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .compare-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .compare-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .compare-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .similarity-score {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .trait-breakdown {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .trait-breakdown h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .trait-lists {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .trait-list h4 {
+            color: #4a5568;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .trait-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            border-left: 3px solid #667eea;
+        }
+
+        .trait-item.low {
+            border-left-color: #e53e3e;
+        }
+
+        .trait-score {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 18px;
+            padding: 40px;
+        }
+
+        .error {
+            text-align: center;
+            color: #e53e3e;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 968px) {
+            .character-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .trait-lists {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-btn {
+                display: block;
+                margin: 5px auto;
+                width: fit-content;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 id="page-title">🎭 Character Analysis</h1>
+        </div>
+
+        <div class="navigation">
+            <a href="characters.html" class="nav-btn">← Back to Characters</a>
+            <a href="index.html" class="nav-btn">🏠 Home</a>
+            <a href="dashboard.html" class="nav-btn">📊 My Dashboard</a>
+        </div>
+
+        <div id="loading" class="loading">
+            Loading character analysis...
+        </div>
+
+        <div id="error" class="error" style="display: none;">
+            <h3>Character Not Found</h3>
+            <p id="error-message"></p>
+            <a href="characters.html" class="nav-btn" style="margin-top: 15px;">← Back to Characters</a>
+        </div>
+
+        <div id="character-content" class="character-container" style="display: none;">
+            <!-- Character Profile Column -->
+            <div class="character-profile">
+                <div class="character-image" id="character-image">
+                    <!-- Character image will be loaded here -->
+                </div>
+                <h2 class="character-name" id="character-name"></h2>
+                <div class="character-show" id="character-show"></div>
+                <p class="character-description" id="character-description"></p>
+                <div class="character-analysis" id="character-analysis"></div>
+            </div>
+
+            <!-- Visualization Column -->
+            <div class="visualization-panel">
+                <h3 class="panel-title">Personality Profile</h3>
+                
+                <div class="comparison-controls">
+                    <button id="compare-btn" class="compare-btn" onclick="compareWithMyScores()">
+                        Compare with My Scores
+                    </button>
+                </div>
+
+                <div id="similarity-score" class="similarity-score">
+                    <div id="similarity-text"></div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="personality-chart"></canvas>
+                </div>
+
+                <div class="trait-breakdown">
+                    <h3>Trait Breakdown</h3>
+                    <div class="trait-lists">
+                        <div>
+                            <h4>🔝 Highest Traits</h4>
+                            <div id="high-traits"></div>
+                        </div>
+                        <div>
+                            <h4>📉 Lowest Traits</h4>
+                            <div id="low-traits"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        let currentCharacter = null;
+        let personalityChart = null;
+        let userScores = null;
+
+        // Load character when page loads
+        document.addEventListener('DOMContentLoaded', loadCharacter);
+
+        function getCharacterIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id');
+        }
+
+        async function loadCharacter() {
+            const characterId = getCharacterIdFromUrl();
+            
+            if (!characterId) {
+                showError('No character ID provided');
+                return;
+            }
+
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const content = document.getElementById('character-content');
+
+            loading.style.display = 'block';
+            error.style.display = 'none';
+            content.style.display = 'none';
+
+            try {
+                const response = await fetch(`${API_BASE}/characters/${encodeURIComponent(characterId)}`);
+                
+                if (!response.ok) {
+                    throw new Error(`Character not found: ${response.status}`);
+                }
+
+                const character = await response.json();
+                currentCharacter = character;
+                
+                loading.style.display = 'none';
+                content.style.display = 'grid';
+                
+                displayCharacter(character);
+                createPersonalityChart(character);
+                
+                // Check if user has scores for comparison
+                await checkUserScores();
+                
+            } catch (err) {
+                console.error('Error loading character:', err);
+                showError(err.message);
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+            document.getElementById('error-message').textContent = message;
+        }
+
+        function displayCharacter(character) {
+            document.getElementById('page-title').textContent = `🎭 ${character.name}`;
+            document.getElementById('character-name').textContent = character.name;
+            document.getElementById('character-show').textContent = character.show;
+            document.getElementById('character-description').textContent = character.description;
+            document.getElementById('character-analysis').textContent = character.analysis;
+
+            // Handle character image
+            const imageContainer = document.getElementById('character-image');
+            if (character.imageUrl) {
+                imageContainer.innerHTML = `
+                    <img src="${character.imageUrl}" alt="${character.name}" 
+                         onerror="this.style.display='none'; this.parentElement.innerHTML='${character.name.charAt(0)}';">
+                `;
+            } else {
+                imageContainer.textContent = character.name.charAt(0);
+            }
+
+            // Display trait breakdown
+            displayTraitBreakdown(character.normalizedScores);
+        }
+
+        function displayTraitBreakdown(scores) {
+            const sortedTraits = Object.entries(scores)
+                .map(([name, score]) => ({ name, score }))
+                .sort((a, b) => b.score - a.score);
+
+            const highTraits = sortedTraits.slice(0, 3);
+            const lowTraits = sortedTraits.slice(-3).reverse();
+
+            const highContainer = document.getElementById('high-traits');
+            const lowContainer = document.getElementById('low-traits');
+
+            highContainer.innerHTML = highTraits.map(trait => `
+                <div class="trait-item">
+                    <span>${trait.name}</span>
+                    <span class="trait-score">${(trait.score * 100).toFixed(0)}%</span>
+                </div>
+            `).join('');
+
+            lowContainer.innerHTML = lowTraits.map(trait => `
+                <div class="trait-item low">
+                    <span>${trait.name}</span>
+                    <span class="trait-score">${(trait.score * 100).toFixed(0)}%</span>
+                </div>
+            `).join('');
+        }
+
+        function createPersonalityChart(character) {
+            const ctx = document.getElementById('personality-chart').getContext('2d');
+            
+            // Destroy existing chart if it exists
+            if (personalityChart) {
+                personalityChart.destroy();
+            }
+
+            const traitNames = Object.keys(character.normalizedScores);
+            const traitValues = Object.values(character.normalizedScores);
+
+            personalityChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: traitNames,
+                    datasets: [{
+                        label: character.name,
+                        data: traitValues,
+                        backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(102, 126, 234, 1)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 1,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            angleLines: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 11
+                                },
+                                callback: function(label) {
+                                    // Shorten long labels for better display
+                                    return label.length > 12 ? label.substring(0, 10) + '...' : label;
+                                }
+                            },
+                            ticks: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        async function checkUserScores() {
+            try {
+                // Get current user from localStorage
+                const userStr = localStorage.getItem('user');
+                if (!userStr) {
+                    document.getElementById('compare-btn').disabled = true;
+                    document.getElementById('compare-btn').textContent = 'Sign In to Compare';
+                    return;
+                }
+
+                const user = JSON.parse(userStr);
+                
+                // Check if user has a completed assessment by checking their personality profile
+                const response = await fetch(`/api/users/${user.userId}/stats`);
+                if (response.ok) {
+                    const stats = await response.json();
+                    if (stats.assessmentCount > 0) {
+                        // User has completed assessments, enable comparison
+                        document.getElementById('compare-btn').disabled = false;
+                        document.getElementById('compare-btn').textContent = 'Compare with My Profile';
+                        
+                        // Try to get user's actual scores from their profile
+                        await loadUserScores(user.userId);
+                    } else {
+                        document.getElementById('compare-btn').disabled = true;
+                        document.getElementById('compare-btn').textContent = 'Complete Assessment to Compare';
+                    }
+                } else {
+                    document.getElementById('compare-btn').disabled = true;
+                    document.getElementById('compare-btn').textContent = 'Complete Assessment to Compare';
+                }
+            } catch (error) {
+                console.error('Error checking user scores:', error);
+                document.getElementById('compare-btn').disabled = true;
+                document.getElementById('compare-btn').textContent = 'Complete Assessment to Compare';
+            }
+        }
+        
+        async function loadUserScores(userId) {
+            try {
+                // Fetch user's personality profile to get their trait scores
+                const response = await fetch(`/api/users/${userId}/profile`);
+                if (response.ok) {
+                    const profile = await response.json();
+                    if (profile && profile.traitScores) {
+                        // Convert trait scores to the format expected by the API
+                        userScores = {
+                            honestyHumility: profile.traitScores[0]?.score / 100 || 0,
+                            emotionality: profile.traitScores[1]?.score / 100 || 0,
+                            extraversion: profile.traitScores[2]?.score / 100 || 0,
+                            agreeableness: profile.traitScores[3]?.score / 100 || 0,
+                            conscientiousness: profile.traitScores[4]?.score / 100 || 0,
+                            openness: profile.traitScores[5]?.score / 100 || 0,
+                            dominance: profile.traitScores[6]?.score / 100 || 0,
+                            vigilance: profile.traitScores[7]?.score / 100 || 0,
+                            selfTranscendence: profile.traitScores[8]?.score / 100 || 0,
+                            abstractOrientation: profile.traitScores[9]?.score / 100 || 0,
+                            valueOrientation: profile.traitScores[10]?.score / 100 || 0,
+                            flexibility: profile.traitScores[11]?.score / 100 || 0
+                        };
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading user scores:', error);
+            }
+        }
+
+        async function compareWithMyScores() {
+            if (!userScores || !currentCharacter) {
+                alert('Please complete your personality assessment first!');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/characters/${currentCharacter.id}/compare`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userScores)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to compare scores');
+                }
+
+                const comparison = await response.json();
+                displayComparison(comparison);
+
+            } catch (error) {
+                console.error('Error comparing scores:', error);
+                alert('Error comparing scores. Please try again.');
+            }
+        }
+
+        function displayComparison(comparison) {
+            // Show similarity score
+            const similarityDiv = document.getElementById('similarity-score');
+            const similarityText = document.getElementById('similarity-text');
+            
+            similarityText.innerHTML = `
+                <strong>Similarity: ${comparison.similarityPercentage.toFixed(1)}%</strong><br>
+                ${comparison.comparisonSummary}
+            `;
+            similarityDiv.style.display = 'block';
+
+            // Add user data to chart
+            addUserDataToChart();
+        }
+
+        function addUserDataToChart() {
+            if (!personalityChart || !userScores || !currentCharacter) return;
+
+            // Convert user scores to array format matching character traits
+            const userTraitValues = Object.keys(currentCharacter.normalizedScores).map(traitName => {
+                const userTraitKey = traitName.replace(/[-\s]/g, '').toLowerCase();
+                const mapping = {
+                    'honesty-humility': userScores.honestyHumility,
+                    'honestyhumility': userScores.honestyHumility,
+                    'emotionality': userScores.emotionality,
+                    'extraversion': userScores.extraversion,
+                    'agreeableness': userScores.agreeableness,
+                    'conscientiousness': userScores.conscientiousness,
+                    'openness': userScores.openness,
+                    'dominance': userScores.dominance,
+                    'vigilance': userScores.vigilance,
+                    'self-transcendence': userScores.selfTranscendence,
+                    'selftranscendence': userScores.selfTranscendence,
+                    'abstract orientation': userScores.abstractOrientation,
+                    'abstractorientation': userScores.abstractOrientation,
+                    'value orientation': userScores.valueOrientation,
+                    'valueorientation': userScores.valueOrientation,
+                    'flexibility': userScores.flexibility
+                };
+                
+                return mapping[userTraitKey] || 0;
+            });
+
+            // Add user dataset to chart
+            personalityChart.data.datasets.push({
+                label: 'Your Scores',
+                data: userTraitValues,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(255, 99, 132, 1)',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 5
+            });
+
+            personalityChart.update();
+        }
+    </script>
+</body>
+</html>

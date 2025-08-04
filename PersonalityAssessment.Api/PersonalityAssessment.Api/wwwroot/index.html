@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personality Assessment - Discover Your True Self</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --warning-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --dark-gradient: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --text-muted: #718096;
+            --border-color: #e2e8f0;
+            --bg-light: #f7fafc;
+            --bg-white: #ffffff;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
+            
+            --border-radius-sm: 6px;
+            --border-radius-md: 12px;
+            --border-radius-lg: 16px;
+            --border-radius-xl: 24px;
+            
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+        
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .hero-section {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ffffff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+            font-weight: 400;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            flex: 1;
+        }
+        
+        .content-wrapper {
+            background: var(--bg-white);
+            border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
+            margin-top: -2rem;
+            position: relative;
+            z-index: 2;
+            box-shadow: var(--shadow-xl);
+            min-height: calc(100vh - 200px);
+        }
+        
+        .nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-white);
+            border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius-md);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-link:hover {
+            background: var(--bg-light);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+        }
+        
+        .content {
+            padding: 2rem;
+        }
+        
+        .progress-bar {
+            background: var(--bg-light);
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--success-gradient);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+        
+        .question-container {
+            background: var(--bg-white);
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+        
+        .question-container:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-number {
+            background: var(--primary-gradient);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .question-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+        
+        .choices-grid {
+            display: grid;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+        
+        .choice-option {
+            position: relative;
+            background: var(--bg-light);
+            border: 2px solid transparent;
+            border-radius: var(--border-radius-md);
+            padding: 1rem 1.25rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .choice-option:hover {
+            background: #f0f8ff;
+            border-color: #667eea;
+            transform: translateX(4px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .choice-option.selected {
+            background: linear-gradient(135deg, #667eea10, #764ba210);
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .choice-radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #cbd5e0;
+            border-radius: 50%;
+            position: relative;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+        
+        .choice-option.selected .choice-radio {
+            border-color: #667eea;
+            background: #667eea;
+        }
+        
+        .choice-option.selected .choice-radio::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+        }
+        
+        .choice-text {
+            font-weight: 500;
+            color: var(--text-primary);
+            flex: 1;
+        }
+        
+        .choice-value {
+            background: var(--primary-gradient);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            opacity: 0.8;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 3rem 0 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: var(--border-radius-md);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 140px;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .btn-primary:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-secondary {
+            background: var(--bg-white);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--bg-light);
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        .loading-container {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--bg-white);
+            border-radius: var(--border-radius-lg);
+            margin: 2rem 0;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .loading-subtitle {
+            color: var(--text-muted);
+        }
+        
+        .results-section {
+            background: var(--bg-white);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            margin: 2rem 0;
+        }
+        
+        .results-header {
+            background: var(--success-gradient);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .results-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .mbti-card {
+            background: var(--dark-gradient);
+            color: white;
+            padding: 2rem;
+            margin: 2rem;
+            border-radius: var(--border-radius-lg);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mbti-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+        
+        @keyframes shimmer {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(180deg); }
+        }
+        
+        .mbti-type {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .mbti-description {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .confidence-display {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .confidence-bar {
+            background: rgba(255,255,255,0.2);
+            height: 8px;
+            border-radius: 4px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: var(--warning-gradient);
+            border-radius: 4px;
+            transition: width 1.5s ease;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
+        }
+        
+        .chart-section {
+            background: var(--bg-light);
+            padding: 2rem;
+            border-radius: var(--border-radius-lg);
+            text-align: center;
+        }
+        
+        .chart-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 1rem 0;
+        }
+        
+        .trait-details {
+            background: var(--bg-light);
+            padding: 2rem;
+            border-radius: var(--border-radius-lg);
+        }
+        
+        .trait-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            margin: 0.75rem 0;
+            background: var(--bg-white);
+            border-radius: var(--border-radius-md);
+            border-left: 4px solid #667eea;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .trait-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .trait-info {
+            flex: 1;
+        }
+        
+        .trait-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .trait-description {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .trait-score-badge {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .summary-card {
+            background: var(--secondary-gradient);
+            color: white;
+            padding: 2rem;
+            margin: 2rem;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .summary-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .summary-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+        
+        .footer-note {
+            background: var(--bg-light);
+            padding: 2rem;
+            margin: 2rem;
+            border-radius: var(--border-radius-lg);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        
+        .footer-note h4 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .footer-note p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .nav-header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .content {
+                padding: 1rem;
+            }
+            
+            .question-container {
+                padding: 1.5rem;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 1.5rem 1rem;
+            }
+            
+            .content-wrapper {
+                margin-top: -1rem;
+            }
+            
+            .question-container {
+                padding: 1rem;
+            }
+            
+            .choice-option {
+                padding: 0.75rem 1rem;
+            }
+            
+            .mbti-type {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">🧠 Discover Your True Self</h1>
+                <p class="hero-subtitle">Unlock the secrets of your personality with our advanced 12-trait assessment system</p>
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="content-wrapper">
+                <div class="nav-header">
+                    <div class="nav-links">
+                        <a href="/dashboard.html" class="nav-link">
+                            <span>←</span> Dashboard
+                        </a>
+                        <a href="/characters.html" class="nav-link">
+                            🎭 Characters
+                        </a>
+                        <a href="/compatibility.html" class="nav-link">
+                            💝 Compatibility
+                        </a>
+                    </div>
+                    <div class="nav-links">
+                        <a href="/signin.html" class="nav-link">Sign Out</a>
+                    </div>
+                </div>
+                
+                <div class="content">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    
+                    <div id="assessment-form">
+                        <div id="questions-container">
+                            <div class="loading-container">
+                                <div class="loading-spinner"></div>
+                                <div class="loading-text">Loading Questions</div>
+                                <div class="loading-subtitle">Preparing your personality assessment...</div>
+                            </div>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button onclick="submitAssessment()" id="submit-btn" class="btn btn-primary" disabled>
+                                ✨ Submit Assessment
+                            </button>
+                            <button onclick="loadDemo()" id="demo-btn" class="btn btn-secondary">
+                                🎯 Load Demo
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="loading" style="display: none;">
+                        <div class="loading-container">
+                            <div class="loading-spinner"></div>
+                            <div class="loading-text">🔄 Analyzing Your Personality</div>
+                            <div class="loading-subtitle">Please wait while we process your responses using advanced psychological algorithms...</div>
+                        </div>
+                    </div>
+                    
+                    <div id="results" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        let questions = [];
+        let answers = {};
+
+        window.onload = function() {
+            console.log('Page loaded');
+            loadQuestions();
+        };
+
+        async function loadQuestions() {
+            try {
+                const response = await fetch(API_BASE + '/assessment/questions');
+                if (!response.ok) {
+                    throw new Error('Failed to load questions');
+                }
+                questions = await response.json();
+                renderQuestions();
+            } catch (error) {
+                console.error('Error loading questions:', error);
+                document.getElementById('questions-container').innerHTML = 
+                    '<div class="loading-container"><div class="loading-text">Error loading questions</div><div class="loading-subtitle">Please refresh the page to try again.</div></div>';
+            }
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+            
+            if (!questions || questions.length === 0) {
+                container.innerHTML = '<div class="loading-container"><div class="loading-text">No questions available</div></div>';
+                return;
+            }
+            
+            questions.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-container';
+                
+                const choicesHtml = question.choices.map(choice => `
+                    <div class="choice-option" onclick="selectChoice(${question.questionId}, ${choice.choiceValue}, this)">
+                        <div class="choice-radio"></div>
+                        <div class="choice-text">${choice.choiceText}</div>
+                        <div class="choice-value">${choice.choiceValue}</div>
+                        <input type="radio" name="q${question.questionId}" value="${choice.choiceValue}" style="display: none;">
+                    </div>
+                `).join('');
+                
+                questionDiv.innerHTML = `
+                    <div class="question-header">
+                        <div class="question-number">${index + 1}</div>
+                    </div>
+                    <h3 class="question-title">${question.questionText}</h3>
+                    <div class="choices-grid">
+                        ${choicesHtml}
+                    </div>
+                `;
+                
+                container.appendChild(questionDiv);
+            });
+            
+            updateProgress();
+        }
+
+        function selectChoice(questionId, value, element) {
+            // Remove selected class from all choices in this question
+            const questionContainer = element.closest('.question-container');
+            questionContainer.querySelectorAll('.choice-option').forEach(choice => {
+                choice.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked choice
+            element.classList.add('selected');
+            
+            // Update the hidden radio button
+            const radio = element.querySelector('input[type="radio"]');
+            radio.checked = true;
+            
+            // Store the answer
+            answers[questionId] = parseInt(value);
+            
+            // Update progress and button state
+            updateProgress();
+            updateSubmitButton();
+        }
+
+        function updateProgress() {
+            const totalQuestions = questions.length;
+            const answeredQuestions = Object.keys(answers).length;
+            const progressPercentage = totalQuestions > 0 ? (answeredQuestions / totalQuestions) * 100 : 0;
+            
+            document.getElementById('progress-fill').style.width = progressPercentage + '%';
+        }
+
+        function updateSubmitButton() {
+            const allAnswered = questions.every(q => answers[q.questionId] !== undefined);
+            document.getElementById('submit-btn').disabled = !allAnswered;
+        }
+
+        async function submitAssessment() {
+            const answersArray = Object.keys(answers).map(qId => ({
+                questionId: parseInt(qId),
+                value: answers[qId]
+            }));
+
+            showLoading();
+
+            try {
+                // Check if user is logged in
+                const userStr = localStorage.getItem('user');
+                let userId = null;
+                if (userStr) {
+                    const user = JSON.parse(userStr);
+                    userId = user.userId;
+                }
+
+                // Include userId in the API call if available
+                const url = userId ? 
+                    `${API_BASE}/assessment/submit?userId=${userId}` : 
+                    `${API_BASE}/assessment/submit`;
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ answers: answersArray })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to submit assessment');
+                }
+
+                const result = await response.json();
+                displayResults(result);
+            } catch (error) {
+                console.error('Error submitting assessment:', error);
+                alert('Error submitting assessment. Please try again.');
+                hideLoading();
+            }
+        }
+
+        async function loadDemo() {
+            showLoading();
+
+            try {
+                const response = await fetch(API_BASE + '/assessment/demo');
+                const result = await response.json();
+                displayResults(result);
+            } catch (error) {
+                console.error('Error loading demo:', error);
+                alert('Error loading demo. Please try again.');
+                hideLoading();
+            }
+        }
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('assessment-form').style.display = 'none';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('assessment-form').style.display = 'block';
+        }
+
+        function displayResults(result) {
+            const resultsDiv = document.getElementById('results');
+            
+            let html = `
+                <div class="results-section">
+                    <div class="results-header">
+                        <h2 class="results-title">🎉 Your Personality Profile</h2>
+                        <p>Discover the unique traits that make you who you are</p>
+                    </div>
+            `;
+            
+            if (result.mbtiType) {
+                html += `
+                    <div class="mbti-card">
+                        <div class="mbti-type">${result.mbtiType}</div>
+                        <p class="mbti-description">${getMbtiDescription(result.mbtiType)}</p>
+                        <div class="confidence-display">
+                            <p>Confidence Level: ${(result.confidence * 100).toFixed(1)}%</p>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" style="width: ${(result.confidence * 100)}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            html += `
+                <div class="results-grid">
+                    <div class="chart-section">
+                        <h3 class="chart-title">📊 Personality Radar Chart</h3>
+                        <div class="chart-container">
+                            <canvas id="personalityChart"></canvas>
+                        </div>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
+                            This visualization shows your scores across all 12 personality dimensions
+                        </p>
+                    </div>
+                    
+                    <div class="trait-details">
+                        <h3 class="chart-title">🎯 Detailed Trait Scores</h3>
+            `;
+            
+            result.traitScores.forEach(trait => {
+                html += `
+                    <div class="trait-item">
+                        <div class="trait-info">
+                            <div class="trait-name">${trait.traitName}</div>
+                            <div class="trait-description">${trait.description}</div>
+                        </div>
+                        <div class="trait-score-badge">${trait.score.toFixed(1)}%</div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                    </div>
+                </div>
+                
+                <div class="summary-card">
+                    <h3 class="summary-title">💡 Your Personality Summary</h3>
+                    <p class="summary-text">${result.summary}</p>
+                </div>
+                
+                <div class="action-buttons">
+                    <a href="/dashboard.html" class="btn btn-primary">📈 View Dashboard</a>
+                    <a href="/compatibility.html" class="btn btn-primary">💝 Find Matches</a>
+                    <a href="/characters.html" class="btn btn-secondary">🎭 Compare Characters</a>
+                    <button onclick="retakeAssessment()" class="btn btn-secondary">🔄 Retake Assessment</button>
+                </div>
+                
+                <div class="footer-note">
+                    <h4>Assessment Completed: ${new Date(result.completedAt).toLocaleString()}</h4>
+                    <p><strong>Advanced Analysis:</strong> This assessment uses sophisticated multi-phase correlation analysis to provide psychologically coherent results. Our scoring system accounts for trait interactions and applies advanced adjustments to ensure realistic personality profiles that reflect the complexity of human psychology.</p>
+                </div>
+            </div>
+            `;
+            
+            resultsDiv.innerHTML = html;
+            resultsDiv.style.display = 'block';
+            document.getElementById('loading').style.display = 'none';
+            
+            setTimeout(() => createRadarChart(result.traitScores), 100);
+        }
+
+        function createRadarChart(traitScores) {
+            const ctx = document.getElementById('personalityChart');
+            if (!ctx) return;
+
+            const labels = traitScores.map(trait => trait.traitName);
+            const scores = traitScores.map(trait => trait.score);
+
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Your Profile',
+                        data: scores,
+                        backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: 'rgba(102, 126, 234, 1)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: 'white',
+                            bodyColor: 'white',
+                            borderColor: 'rgba(102, 126, 234, 1)',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.parsed.r.toFixed(1)}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            min: 0,
+                            ticks: { 
+                                stepSize: 20,
+                                color: '#718096',
+                                font: { size: 12 }
+                            },
+                            grid: { color: 'rgba(113, 128, 150, 0.2)' },
+                            angleLines: { color: 'rgba(113, 128, 150, 0.2)' },
+                            pointLabels: {
+                                font: { size: 11, weight: '600' },
+                                color: '#2d3748'
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeInOutQuart'
+                    }
+                }
+            });
+        }
+
+        function retakeAssessment() {
+            if (confirm('Are you sure you want to retake the assessment? This will clear your current answers.')) {
+                answers = {};
+                
+                document.querySelectorAll('.choice-option').forEach(choice => {
+                    choice.classList.remove('selected');
+                });
+                
+                document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.checked = false;
+                });
+                
+                document.getElementById('results').style.display = 'none';
+                document.getElementById('assessment-form').style.display = 'block';
+                document.getElementById('submit-btn').disabled = true;
+                
+                updateProgress();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function getMbtiDescription(mbtiType) {
+            const descriptions = {
+                'ENTJ': 'The Commander - Natural born leaders who are ambitious, strategic, and excellent at organizing people and resources.',
+                'ENTP': 'The Debater - Innovative, clever, and expressive individuals who love intellectual challenges and exploring new possibilities.',
+                'ENFJ': 'The Protagonist - Inspiring leaders who are passionate about helping others reach their potential.',
+                'ENFP': 'The Campaigner - Enthusiastic, creative, and sociable free spirits who can always find a reason to smile.',
+                'ESTJ': 'The Executive - Excellent administrators who are practical, fact-minded, and reliable.',
+                'ESTP': 'The Entrepreneur - Bold, practical experimenters who love living in the moment.',
+                'ESFJ': 'The Consul - Extraordinarily caring, social, and popular people who are always eager to help.',
+                'ESFP': 'The Entertainer - Spontaneous, energetic, and enthusiastic people who truly enjoy life.',
+                'INTJ': 'The Architect - Imaginative and strategic thinkers with a plan for everything.',
+                'INTP': 'The Thinker - Innovative inventors with an unquenchable thirst for knowledge.',
+                'INFJ': 'The Advocate - Creative and insightful individuals who are inspired by possibilities.',
+                'INFP': 'The Mediator - Poetic, kind, and altruistic people who are always eager to help good causes.',
+                'ISTJ': 'The Logistician - Practical and fact-minded individuals who are extremely reliable.',
+                'ISTP': 'The Virtuoso - Bold and practical experimenters who are masters of all kinds of tools.',
+                'ISFJ': 'The Protector - Warm-hearted and dedicated individuals who are always ready to protect loved ones.',
+                'ISFP': 'The Adventurer - Flexible and charming artists who are always ready to explore new possibilities.'
+            };
+            return descriptions[mbtiType] || 'A unique personality type with distinctive traits and characteristics.';
+        }
+    </script>
+</body>
+</html>

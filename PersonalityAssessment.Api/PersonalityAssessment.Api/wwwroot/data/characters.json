@@ -1,0 +1,200 @@
+[
+  {
+    "id": "phineas-flynn",
+    "name": "Phineas Flynn",
+    "show": "Phineas and Ferb",
+    "imageUrl": "/images/characters/phineas.png",
+    "description": "The endlessly optimistic and wildly creative co-protagonist, Phineas is an unstoppable force of summer fun. His personality is defined by his boundless energy and ingenuity.",
+    "analysis": "Phineas's profile is dominated by extremely high scores in Extraversion, Openness, and Abstract Orientation. This combination fuels his daily invention sprees and his ability to see possibilities everywhere. His moderate Vigilance and high Emotionality make him both fearless and charismatic.",
+    "normalizedScores": {
+      "Honesty-Humility": 0.831,
+      "Emotionality": 0.919,
+      "Extraversion": 0.994,
+      "Agreeableness": 0.806,
+      "Conscientiousness": 0.756,
+      "Openness": 0.996,
+      "Dominance": 0.681,
+      "Vigilance": 0.619,
+      "Self-Transcendence": 0.769,
+      "Abstract Orientation": 0.999,
+      "Value Orientation": 0.819,
+      "Flexibility": 0.881
+    }
+  },
+  {
+    "id": "ferb-fletcher",
+    "name": "Ferb Fletcher",
+    "show": "Phineas and Ferb",
+    "imageUrl": "/images/characters/ferb.png",
+    "description": "The quiet genius behind many of Phineas's inventions, Ferb is incredibly skilled and thoughtful. His calm demeanor masks a brilliant engineering mind.",
+    "analysis": "Ferb's personality is characterized by high Conscientiousness and Abstract Orientation, making him the perfect complement to Phineas's wild creativity. His extremely low Extraversion reflects his preference for action over words, while his strong technical skills show in his elevated Openness scores.",
+    "normalizedScores": {
+      "Honesty-Humility": 0.769,
+      "Emotionality": 0.744,
+      "Extraversion": 0.544,
+      "Agreeableness": 0.756,
+      "Conscientiousness": 0.894,
+      "Openness": 0.931,
+      "Dominance": 0.544,
+      "Vigilance": 0.556,
+      "Self-Transcendence": 0.781,
+      "Abstract Orientation": 0.996,
+      "Value Orientation": 0.856,
+      "Flexibility": 0.806
+    }
+  },
+  {
+    "id": "candace-flynn",
+    "name": "Candace Flynn",
+    "show": "Phineas and Ferb",
+    "imageUrl": "/images/characters/candace.png",
+    "description": "The frustrated older sister who desperately wants to get her brothers in trouble. Candace is dramatic, anxious, and perpetually stressed by her brothers' antics.",
+    "analysis": "Candace's profile is dominated by extremely high Vigilance and Emotionality, reflecting her constant state of alertness and emotional reactivity. Her low scores in Conscientiousness and Self-Transcendence show her focus on immediate concerns rather than long-term goals or broader perspectives.",
+    "normalizedScores": {
+      "Honesty-Humility": 0.606,
+      "Emotionality": 1.044,
+      "Extraversion": 0.831,
+      "Agreeableness": 0.656,
+      "Conscientiousness": 0.581,
+      "Openness": 0.631,
+      "Dominance": 0.706,
+      "Vigilance": 1.069,
+      "Self-Transcendence": 0.581,
+      "Abstract Orientation": 0.656,
+      "Value Orientation": 0.606,
+      "Flexibility": 0.569
+    }
+  },
+  {
+    "id": "dr-doofenshmirtz",
+    "name": "Dr. Doofenshmirtz",
+    "show": "Phineas and Ferb",
+    "imageUrl": "/images/characters/doofenshmirtz.png",
+    "description": "The bumbling evil scientist with a tragic backstory. Despite his villainous aspirations, Doofenshmirtz is more pathetic than threatening, often failing due to his own incompetence.",
+    "analysis": "Doofenshmirtz shows high Dominance and Abstract Orientation, reflecting his megalomaniacal tendencies and inventive abilities. However, his very low Agreeableness and moderate scores across other traits reveal someone whose evil ambitions are undermined by his fundamental need for validation and acceptance.",
+    "normalizedScores": {
+      "Honesty-Humility": 0.669,
+      "Emotionality": 0.756,
+      "Extraversion": 0.681,
+      "Agreeableness": 0.544,
+      "Conscientiousness": 0.644,
+      "Openness": 0.881,
+      "Dominance": 0.881,
+      "Vigilance": 0.731,
+      "Self-Transcendence": 0.619,
+      "Abstract Orientation": 0.931,
+      "Value Orientation": 0.669,
+      "Flexibility": 0.681
+    }
+  },
+  {
+    "id": "perry-platypus",
+    "name": "Perry the Platypus",
+    "show": "Phineas and Ferb",
+    "imageUrl": "/images/characters/perry.png",
+    "description": "Agent P is a secret agent who leads a double life as the Flynn-Fletcher family pet. He's highly skilled, professional, and dedicated to stopping Dr. Doofenshmirtz's schemes.",
+    "analysis": "Perry's profile shows extremely high Conscientiousness and Emotionality, reflecting his dedication to duty and ability to care deeply while maintaining professional composure. His low Abstract Orientation and Dominance show his preference for practical action over theoretical planning or power-seeking.",
+    "normalizedScores": {
+      "Honesty-Humility": 0.931,
+      "Emotionality": 0.994,
+      "Extraversion": 0.869,
+      "Agreeableness": 0.781,
+      "Conscientiousness": 0.956,
+      "Openness": 0.556,
+      "Dominance": 0.519,
+      "Vigilance": 0.581,
+      "Self-Transcendence": 0.831,
+      "Abstract Orientation": 0.556,
+      "Value Orientation": 0.806,
+      "Flexibility": 0.731
+    }
+  },
+  {
+    "id": "isabella",
+    "name": "Isabella Garcia-Shapiro",
+    "show": "Phineas and Ferb",
+    "imageUrl": "/images/characters/isabella.png",
+    "description": "The sweet, competent, and ambitious girl next door who has a crush on Phineas. Isabella is a natural leader and high achiever who excels at everything she does.",
+    "analysis": "Isabella demonstrates high Extraversion and Agreeableness, making her both socially skilled and genuinely caring. Her elevated Value Orientation and Self-Transcendence reflect her strong moral compass and desire to help others, while her balanced profile shows remarkable emotional maturity for her age.",
+    "normalizedScores": {
+      "Honesty-Humility": 0.831,
+      "Emotionality": 0.619,
+      "Extraversion": 0.994,
+      "Agreeableness": 0.956,
+      "Conscientiousness": 0.756,
+      "Openness": 0.831,
+      "Dominance": 0.656,
+      "Vigilance": 0.644,
+      "Self-Transcendence": 0.806,
+      "Abstract Orientation": 0.806,
+      "Value Orientation": 0.881,
+      "Flexibility": 0.756
+    }
+  },
+  {
+    "id": "baljeet",
+    "name": "Baljeet Tjinder",
+    "show": "Phineas and Ferb",
+    "imageUrl": "/images/characters/baljeet.png",
+    "description": "The highly intelligent and academically focused friend who often provides the scientific knowledge for the group's projects. Baljeet is anxious about grades and rules but loyal to his friends.",
+    "analysis": "Baljeet's extremely high Conscientiousness drives his academic excellence and rule-following behavior. His low Extraversion and Emotionality reflect his introverted, analytical nature, while his strong Openness and moderate Abstract Orientation show his intellectual capabilities and systematic thinking.",
+    "normalizedScores": {
+      "Honesty-Humility": 0.681,
+      "Emotionality": 0.631,
+      "Extraversion": 0.606,
+      "Agreeableness": 0.756,
+      "Conscientiousness": 0.931,
+      "Openness": 0.806,
+      "Dominance": 0.644,
+      "Vigilance": 0.681,
+      "Self-Transcendence": 0.706,
+      "Abstract Orientation": 0.756,
+      "Value Orientation": 0.781,
+      "Flexibility": 0.581
+    }
+  },
+  {
+    "id": "buford",
+    "name": "Buford Van Stomm",
+    "show": "Phineas and Ferb",
+    "imageUrl": "/images/characters/buford.png",
+    "description": "The neighborhood bully who becomes part of the friend group. Despite his tough exterior and intimidating behavior, Buford has a softer side and genuinely cares about his friends.",
+    "analysis": "Buford's personality is dominated by extremely high Dominance, reflecting his bullying behavior and need to assert control. However, his decent Agreeableness and Extraversion suggest that his tough exterior masks someone capable of loyalty and friendship, just expressed differently.",
+    "normalizedScores": {
+      "Honesty-Humility": 0.619,
+      "Emotionality": 0.569,
+      "Extraversion": 0.706,
+      "Agreeableness": 0.744,
+      "Conscientiousness": 0.669,
+      "Openness": 0.544,
+      "Dominance": 0.931,
+      "Vigilance": 0.681,
+      "Self-Transcendence": 0.619,
+      "Abstract Orientation": 0.544,
+      "Value Orientation": 0.569,
+      "Flexibility": 0.694
+    }
+  },
+  {
+    "id": "linda-flynn-fletcher",
+    "name": "Linda Flynn-Fletcher",
+    "show": "Phineas and Ferb",
+    "imageUrl": "/images/characters/linda.png",
+    "description": "The patient and caring mother of Phineas, Ferb, and Candace. Linda is remarkably calm and supportive, often missing her sons' elaborate projects while maintaining a positive family environment.",
+    "analysis": "Linda's profile shows balanced, mature personality traits with particular strength in Conscientiousness and Agreeableness. Her low Emotionality and Vigilance explain how she remains so calm and trusting, even when chaos erupts around her. This makes her an excellent maternal figure.",
+    "normalizedScores": {
+      "Honesty-Humility": 0.756,
+      "Emotionality": 0.556,
+      "Extraversion": 0.631,
+      "Agreeableness": 0.806,
+      "Conscientiousness": 0.831,
+      "Openness": 0.681,
+      "Dominance": 0.581,
+      "Vigilance": 0.556,
+      "Self-Transcendence": 0.731,
+      "Abstract Orientation": 0.656,
+      "Value Orientation": 0.781,
+      "Flexibility": 0.656
+    }
+  }
+]

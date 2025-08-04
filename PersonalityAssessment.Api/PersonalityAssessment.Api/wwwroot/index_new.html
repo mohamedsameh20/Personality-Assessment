@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personality Assessment</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0 0 10px 0;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .nav-links a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .question {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            background: #fafafa;
+        }
+        
+        .question h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .choices {
+            margin-top: 15px;
+        }
+        
+        .choice-option {
+            display: block;
+            margin: 10px 0;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+        
+        .choice-option:hover {
+            background: #f0f8ff;
+            border-color: #667eea;
+        }
+        
+        .choice-option input[type="radio"] {
+            margin-right: 12px;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .chart-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 20px 0;
+        }
+        
+        .mbti-card {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .mbti-card h3 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .trait-details {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+        }
+        
+        .trait-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .trait-name {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .trait-score {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .summary-card {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Personality Assessment</h1>
+            <p>Discover your unique psychological profile</p>
+        </div>
+        
+        <div class="content">
+            <div class="nav-links">
+                <div>
+                    <a href="/dashboard.html">← Dashboard</a>
+                    <a href="/characters.html">🎭 Characters</a>
+                </div>
+                <div>
+                    <a href="/signin.html">Sign Out</a>
+                </div>
+            </div>
+            
+            <div id="assessment-form">
+                <div id="questions-container">
+                    <div class="loading">Loading questions...</div>
+                </div>
+                <div class="buttons">
+                    <button onclick="submitAssessment()" id="submit-btn" class="btn btn-primary" disabled>Submit Assessment</button>
+                    <button onclick="loadDemo()" id="demo-btn" class="btn btn-secondary">Load Demo</button>
+                </div>
+            </div>
+            
+            <div id="loading" class="loading" style="display: none;">
+                <h3>🔄 Calculating your personality profile...</h3>
+                <p>Please wait while we analyze your responses</p>
+            </div>
+            
+            <div id="results" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        let questions = [];
+        let answers = {};
+
+        window.onload = function() {
+            console.log('Page loaded');
+            loadQuestions();
+        };
+
+        async function loadQuestions() {
+            try {
+                const response = await fetch(API_BASE + '/assessment/questions');
+                if (!response.ok) {
+                    throw new Error('Failed to load questions');
+                }
+                questions = await response.json();
+                renderQuestions();
+            } catch (error) {
+                console.error('Error loading questions:', error);
+                document.getElementById('questions-container').innerHTML = 
+                    '<div class="loading">Error loading questions. Please refresh the page.</div>';
+            }
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+            
+            if (!questions || questions.length === 0) {
+                container.innerHTML = '<div class="loading">No questions available.</div>';
+                return;
+            }
+            
+            questions.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                
+                const choicesHtml = question.choices.map(choice => 
+                    '<label class="choice-option">' +
+                    '<input type="radio" name="q' + question.questionId + '" value="' + choice.choiceValue + '" ' +
+                    'onchange="updateAnswer(' + question.questionId + ', ' + choice.choiceValue + ')">' +
+                    choice.choiceText +
+                    '</label>'
+                ).join('');
+                
+                questionDiv.innerHTML = 
+                    '<h3>Question ' + (index + 1) + '</h3>' +
+                    '<p>' + question.questionText + '</p>' +
+                    '<div class="choices">' + choicesHtml + '</div>';
+                
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function updateAnswer(questionId, value) {
+            answers[questionId] = parseInt(value);
+            
+            const allAnswered = questions.every(q => answers[q.questionId] !== undefined);
+            document.getElementById('submit-btn').disabled = !allAnswered;
+        }
+
+        async function submitAssessment() {
+            const answersArray = Object.keys(answers).map(qId => ({
+                questionId: parseInt(qId),
+                value: answers[qId]
+            }));
+
+            showLoading();
+
+            try {
+                const response = await fetch(API_BASE + '/assessment/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ answers: answersArray })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to submit assessment');
+                }
+
+                const result = await response.json();
+                displayResults(result);
+            } catch (error) {
+                console.error('Error submitting assessment:', error);
+                alert('Error submitting assessment. Please try again.');
+                hideLoading();
+            }
+        }
+
+        async function loadDemo() {
+            showLoading();
+
+            try {
+                const response = await fetch(API_BASE + '/assessment/demo');
+                const result = await response.json();
+                displayResults(result);
+            } catch (error) {
+                console.error('Error loading demo:', error);
+                alert('Error loading demo. Please try again.');
+                hideLoading();
+            }
+        }
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('assessment-form').style.display = 'none';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('assessment-form').style.display = 'block';
+        }
+
+        function displayResults(result) {
+            const resultsDiv = document.getElementById('results');
+            
+            let html = '<h2 style="text-align: center; color: #333; margin-bottom: 30px;">🎉 Your Personality Profile</h2>';
+            
+            if (result.mbtiType) {
+                html += '<div class="mbti-card">' +
+                        '<h3>' + result.mbtiType + '</h3>' +
+                        '<p>' + getMbtiDescription(result.mbtiType) + '</p>' +
+                        '<p>Confidence: ' + (result.confidence * 100).toFixed(1) + '%</p>' +
+                        '</div>';
+            }
+            
+            html += '<div class="results-grid">' +
+                    '<div class="chart-section">' +
+                    '<h3>📊 Personality Radar Chart</h3>' +
+                    '<div class="chart-container">' +
+                    '<canvas id="personalityChart"></canvas>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="trait-details">' +
+                    '<h3>🎯 Trait Scores</h3>';
+            
+            result.traitScores.forEach(trait => {
+                html += '<div class="trait-item">' +
+                        '<div>' +
+                        '<div class="trait-name">' + trait.traitName + '</div>' +
+                        '<small style="color: #666;">' + trait.description + '</small>' +
+                        '</div>' +
+                        '<div class="trait-score">' + trait.score.toFixed(1) + '%</div>' +
+                        '</div>';
+            });
+            
+            html += '</div></div>';
+            
+            html += '<div class="summary-card">' +
+                    '<h3>💡 Summary</h3>' +
+                    '<p>' + result.summary + '</p>' +
+                    '</div>';
+            
+            html += '<div class="buttons">' +
+                    '<a href="/dashboard.html" class="btn btn-primary">📈 Dashboard</a>' +
+                    '<a href="/compatibility.html" class="btn btn-primary">💝 Find Matches</a>' +
+                    '<button onclick="retakeAssessment()" class="btn btn-secondary">🔄 Retake</button>' +
+                    '</div>';
+            
+            resultsDiv.innerHTML = html;
+            resultsDiv.style.display = 'block';
+            document.getElementById('loading').style.display = 'none';
+            
+            setTimeout(() => createRadarChart(result.traitScores), 100);
+        }
+
+        function createRadarChart(traitScores) {
+            const ctx = document.getElementById('personalityChart');
+            if (!ctx) return;
+
+            const labels = traitScores.map(trait => trait.traitName);
+            const scores = traitScores.map(trait => trait.score);
+
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Your Profile',
+                        data: scores,
+                        backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: 'rgba(102, 126, 234, 1)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            min: 0,
+                            ticks: { stepSize: 20 }
+                        }
+                    }
+                }
+            });
+        }
+
+        function retakeAssessment() {
+            if (confirm('Retake the assessment? This will clear your answers.')) {
+                answers = {};
+                
+                const radioButtons = document.querySelectorAll('input[type="radio"]');
+                radioButtons.forEach(radio => radio.checked = false);
+                
+                document.getElementById('results').style.display = 'none';
+                document.getElementById('assessment-form').style.display = 'block';
+                document.getElementById('submit-btn').disabled = true;
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function getMbtiDescription(mbtiType) {
+            const descriptions = {
+                'ENTJ': 'The Commander - Natural born leaders.',
+                'ENTP': 'The Debater - Innovative and clever.',
+                'ENFJ': 'The Protagonist - Inspiring leaders.',
+                'ENFP': 'The Campaigner - Enthusiastic and creative.',
+                'ESTJ': 'The Executive - Excellent administrators.',
+                'ESTP': 'The Entrepreneur - Bold experimenters.',
+                'ESFJ': 'The Consul - Extraordinarily caring.',
+                'ESFP': 'The Entertainer - Spontaneous and energetic.',
+                'INTJ': 'The Architect - Strategic thinkers.',
+                'INTP': 'The Thinker - Innovative inventors.',
+                'INFJ': 'The Advocate - Creative and insightful.',
+                'INFP': 'The Mediator - Poetic and altruistic.',
+                'ISTJ': 'The Logistician - Practical and reliable.',
+                'ISTP': 'The Virtuoso - Bold experimenters.',
+                'ISFJ': 'The Protector - Warm-hearted and dedicated.',
+                'ISFP': 'The Adventurer - Flexible and charming.'
+            };
+            return descriptions[mbtiType] || 'A unique personality type.';
+        }
+    </script>
+</body>
+</html>

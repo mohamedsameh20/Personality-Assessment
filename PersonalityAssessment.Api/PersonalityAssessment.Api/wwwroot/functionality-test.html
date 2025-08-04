@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Functionality Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        .loading { background-color: #fff3cd; border-color: #ffeaa7; }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background-color: #0056b3; }
+        button:disabled { background-color: #6c757d; cursor: not-allowed; }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Personality Assessment Project - Functionality Test</h1>
+        
+        <div class="test-section info">
+            <h3>Test Overview</h3>
+            <p>This page tests all core functionality of the Personality Assessment system:</p>
+            <ul>
+                <li>API endpoints and database connectivity</li>
+                <li>Admin dashboard functionality</li>
+                <li>User profile data retrieval</li>
+                <li>System health checks</li>
+            </ul>
+        </div>
+
+        <div class="test-section" id="api-test">
+            <h3>🔌 API Connectivity Test</h3>
+            <button onclick="testAPI()">Test API Endpoints</button>
+            <div id="api-results"></div>
+        </div>
+
+        <div class="test-section" id="dashboard-test">
+            <h3>📊 Dashboard Integration Test</h3>
+            <button onclick="testDashboard()">Test Dashboard Access</button>
+            <div id="dashboard-results"></div>
+        </div>
+
+        <div class="test-section" id="performance-test">
+            <h3>⚡ Performance Test</h3>
+            <button onclick="testPerformance()">Run Performance Tests</button>
+            <div id="performance-results"></div>
+        </div>
+
+        <div class="test-section" id="final-results">
+            <h3>📋 Test Summary</h3>
+            <div id="summary-results">Click the test buttons above to see results.</div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        let testResults = {
+            api: false,
+            network: false,
+            dashboard: false,
+            performance: false
+        };
+
+        function updateResults(testName, success, message, data = null) {
+            testResults[testName] = success;
+            const container = document.getElementById(`${testName}-results`);
+            const className = success ? 'success' : 'error';
+            let html = `<div class="${className}"><strong>${success ? '✅' : '❌'} ${message}</strong></div>`;
+            
+            if (data) {
+                html += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            }
+            
+            container.innerHTML = html;
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const total = Object.keys(testResults).length;
+            const passed = Object.values(testResults).filter(r => r).length;
+            const summaryContainer = document.getElementById('summary-results');
+            
+            if (passed === 0) {
+                summaryContainer.innerHTML = 'Click the test buttons above to see results.';
+                return;
+            }
+
+            const percentage = Math.round((passed / total) * 100);
+            const className = percentage === 100 ? 'success' : percentage >= 75 ? 'info' : 'error';
+            
+            summaryContainer.innerHTML = `
+                <div class="${className}">
+                    <strong>Overall Test Results: ${passed}/${total} tests passed (${percentage}%)</strong>
+                    <ul>
+                        <li>API Connectivity: ${testResults.api ? '✅ Passed' : '❌ Failed'}</li>
+                        <li>Network Data: ${testResults.network ? '✅ Passed' : '❌ Failed'}</li>
+                        <li>Dashboard Access: ${testResults.dashboard ? '✅ Passed' : '❌ Failed'}</li>
+                        <li>Performance: ${testResults.performance ? '✅ Passed' : '❌ Failed'}</li>
+                    </ul>
+                    ${percentage === 100 ? '<p><strong>🎉 All tests passed! The system is fully functional.</strong></p>' : ''}
+                </div>
+            `;
+        }
+
+        async function testAPI() {
+            const container = document.getElementById('api-results');
+            container.innerHTML = '<div class="loading">Testing API endpoints...</div>';
+            
+            try {
+                // Test database stats
+                const statsResponse = await fetch(`${API_BASE}/admin/stats`);
+                const stats = await statsResponse.json();
+                
+                if (!statsResponse.ok) {
+                    throw new Error(`Stats API failed: ${statsResponse.status}`);
+                }
+
+                // Test users endpoint
+                const usersResponse = await fetch(`${API_BASE}/admin/users`);
+                const users = await usersResponse.json();
+                
+                if (!usersResponse.ok) {
+                    throw new Error(`Users API failed: ${usersResponse.status}`);
+                }
+
+                const testData = {
+                    stats: {
+                        totalUsers: stats.totalUsers,
+                        totalProfiles: stats.totalProfiles,
+                        totalAssessments: stats.totalAssessments
+                    },
+                    usersCount: users.length,
+                    sampleUser: users[0] ? {
+                        id: users[0].userId,
+                        name: users[0].name || 'Anonymous',
+                        hasProfile: !!users[0].personalityProfile
+                    } : null
+                };
+
+                updateResults('api', true, 'API endpoints working correctly', testData);
+            } catch (error) {
+                updateResults('api', false, `API test failed: ${error.message}`);
+            }
+        }
+
+        async function testDashboard() {
+            const container = document.getElementById('dashboard-results');
+            container.innerHTML = '<div class="loading">Testing admin access...</div>';
+            
+            try {
+                // Test if admin pages are accessible
+                const adminResponse = await fetch('/admin.html');
+                
+                if (!adminResponse.ok) {
+                    throw new Error(`Admin page not accessible: ${adminResponse.status}`);
+                }
+
+                // Test admin functionality
+                const testData = {
+                    adminPage: adminResponse.status === 200 ? 'Accessible' : 'Failed',
+                    adminUrl: window.location.origin + '/admin.html'
+                };
+
+                updateResults('dashboard', true, 'Dashboard pages accessible', testData);
+            } catch (error) {
+                updateResults('dashboard', false, `Dashboard test failed: ${error.message}`);
+            }
+        }
+
+        async function testPerformance() {
+            const container = document.getElementById('performance-results');
+            container.innerHTML = '<div class="loading">Running performance tests...</div>';
+            
+            try {
+                const startTime = performance.now();
+                
+                // Test API response times
+                const apiStart = performance.now();
+                const statsResponse = await fetch(`${API_BASE}/admin/stats`);
+                await statsResponse.json();
+                const apiTime = performance.now() - apiStart;
+                
+                // Test network generation time
+                const networkStart = performance.now();
+                const networkResponse = await fetch(`${API_BASE}/admin/personality-network?similarityThreshold=50`);
+                const networkData = await networkResponse.json();
+                const networkTime = performance.now() - networkStart;
+                
+                const totalTime = performance.now() - startTime;
+                
+                const performanceData = {
+                    apiResponseTime: `${apiTime.toFixed(2)}ms`,
+                    networkGenerationTime: `${networkTime.toFixed(2)}ms`,
+                    totalTestTime: `${totalTime.toFixed(2)}ms`,
+                    networkComplexity: {
+                        users: networkData.totalUsers,
+                        connections: networkData.totalConnections,
+                        computedEdges: networkData.edges?.length || 0
+                    },
+                    performance: {
+                        apiSpeed: apiTime < 1000 ? 'Excellent' : apiTime < 3000 ? 'Good' : 'Slow',
+                        networkSpeed: networkTime < 2000 ? 'Excellent' : networkTime < 5000 ? 'Good' : 'Slow'
+                    }
+                };
+
+                const success = apiTime < 5000 && networkTime < 10000;
+                updateResults('performance', success, 
+                    success ? 'Performance tests passed' : 'Performance issues detected', 
+                    performanceData);
+            } catch (error) {
+                updateResults('performance', false, `Performance test failed: ${error.message}`);
+            }
+        }
+
+        // Auto-run basic tests on page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('button[onclick="testAPI()"]').click();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

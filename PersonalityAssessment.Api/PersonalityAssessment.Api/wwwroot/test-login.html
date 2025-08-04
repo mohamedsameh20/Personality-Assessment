@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Login</title>
+</head>
+<body>
+    <h1>Setting up test login...</h1>
+    <script>
+        // Set user 28 as the logged-in user (ISTJ personality)
+        const testUser = {
+            userId: 28,
+            name: "Demo User",
+            email: "demo@example.com"
+        };
+        
+        localStorage.setItem('user', JSON.stringify(testUser));
+        
+        // Redirect to matches page
+        setTimeout(function() {
+            window.location.href = '/matches.html';
+        }, 1000);
+    </script>
+</body>
+</html>

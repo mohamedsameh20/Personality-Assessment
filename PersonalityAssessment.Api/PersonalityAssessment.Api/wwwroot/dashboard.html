@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personality Assessment Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --warning-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --dark-gradient: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --text-muted: #718096;
+            --border-color: #e2e8f0;
+            --bg-light: #f7fafc;
+            --bg-white: #ffffff;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
+            
+            --border-radius-sm: 6px;
+            --border-radius-md: 12px;
+            --border-radius-lg: 16px;
+            --border-radius-xl: 24px;
+            
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+        
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .hero-section {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #ffffff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            flex: 1;
+        }
+        
+        .content-wrapper {
+            background: var(--bg-white);
+            border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
+            margin-top: -2rem;
+            position: relative;
+            z-index: 2;
+            box-shadow: var(--shadow-xl);
+            min-height: calc(100vh - 200px);
+        }
+        
+        .user-welcome {
+            background: var(--success-gradient);
+            color: white;
+            padding: 2rem;
+            border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .user-welcome::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: shimmer 4s ease-in-out infinite;
+        }
+        
+        @keyframes shimmer {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(180deg); }
+        }
+        
+        .welcome-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .welcome-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .welcome-subtitle {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            font-weight: 500;
+        }
+        
+        .content {
+            padding: 2rem;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .card {
+            background: var(--bg-white);
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--border-radius-md);
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .card-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius-md);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--bg-white);
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-white);
+            padding: 2rem;
+            border-radius: var(--border-radius-lg);
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 0.5rem;
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition);
+        }
+        
+        .close-btn:hover {
+            background: var(--bg-light);
+            color: var(--text-primary);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--bg-light);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: var(--bg-white);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        
+        .form-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+        
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            margin: 0.75rem 0;
+            background: var(--bg-light);
+            border-radius: var(--border-radius-md);
+            border-left: 4px solid #667eea;
+        }
+        
+        .history-info h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .history-info small {
+            color: var(--text-muted);
+        }
+        
+        .history-stats {
+            text-align: right;
+        }
+        
+        .confidence-badge {
+            background: var(--success-gradient);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 1.5rem 1rem;
+            }
+            
+            .content-wrapper {
+                margin-top: -1rem;
+            }
+            
+            .content {
+                padding: 1rem;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            .stats-row {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.75rem;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">🧠 Personality Dashboard</h1>
+                <p class="hero-subtitle">Your personal journey of self-discovery and growth</p>
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="content-wrapper">
+                <div class="user-welcome" id="userInfo">
+                    <div class="welcome-content">
+                        <h2 class="welcome-title">Welcome back!</h2>
+                        <p class="welcome-subtitle">Ready to explore your personality?</p>
+                        <div class="stats-row">
+                            <div class="stat-item">
+                                <span class="stat-number" id="assessmentCount">0</span>
+                                <span class="stat-label">Assessments</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="matchCount">0</span>
+                                <span class="stat-label">Matches</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="daysActive">1</span>
+                                <span class="stat-label">Days Active</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="content">
+                    <div class="dashboard-grid">
+                        <!-- Take Assessment Card -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-icon">📝</div>
+                                <h3 class="card-title">Take Assessment</h3>
+                            </div>
+                            <p class="card-description">Complete our comprehensive 12-trait personality assessment to discover your unique psychological profile and unlock insights about yourself.</p>
+                            <a href="index.html" class="btn btn-primary">✨ Start Assessment</a>
+                        </div>
+                        
+                        <!-- Account Settings Card -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-icon">⚙️</div>
+                                <h3 class="card-title">Account Settings</h3>
+                            </div>
+                            <p class="card-description">Manage your profile, privacy settings, and personal information to customize your experience.</p>
+                            <button class="btn btn-secondary" onclick="showAccountSettings()">🔧 Manage Account</button>
+                        </div>
+                        
+                        <!-- Assessment History Card -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-icon">📊</div>
+                                <h3 class="card-title">Assessment History</h3>
+                            </div>
+                            <p class="card-description">View your previous assessments and track your personality development over time with detailed analytics.</p>
+                            <button class="btn btn-secondary" onclick="showHistory()">📈 View History</button>
+                        </div>
+                        
+                        <!-- Similar Personalities Card -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-icon">🎭</div>
+                                <h3 class="card-title">Find People Like You</h3>
+                            </div>
+                            <p class="card-description">Discover people with personality profiles similar to yours using advanced trait matching algorithms.</p>
+                            <a href="matches.html" class="btn btn-secondary">🔍 Find Similar</a>
+                        </div>
+                        
+                        <!-- Compatibility Matches Card -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-icon">💝</div>
+                                <h3 class="card-title">Compatibility Matches</h3>
+                            </div>
+                            <p class="card-description">Discover who you're most compatible with based on our research-driven compatibility algorithm that blends similarity and complementarity.</p>
+                            <a href="compatibility.html" class="btn btn-primary">💕 Find Matches</a>
+                        </div>
+                        
+                        <!-- Famous Personalities Card -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-icon">🌟</div>
+                                <h3 class="card-title">Famous Characters</h3>
+                            </div>
+                            <p class="card-description">Explore personality profiles of famous cartoon characters and see how you compare with detailed analysis.</p>
+                            <a href="characters.html" class="btn btn-primary">🎬 Explore Characters</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Account Settings Modal -->
+    <div id="accountModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Account Settings</h3>
+                <button class="close-btn" onclick="closeAccountSettings()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Full Name:</label>
+                <input type="text" id="userName" class="form-input" placeholder="Enter your full name">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email:</label>
+                <input type="email" id="userEmail" class="form-input" placeholder="Enter your email address">
+            </div>
+            <div class="form-checkbox">
+                <input type="checkbox" id="shareProfile">
+                <label>Allow others to find my profile</label>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeAccountSettings()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveAccountSettings()">💾 Save Changes</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- History Modal -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Assessment History</h3>
+                <button class="close-btn" onclick="closeHistory()">&times;</button>
+            </div>
+            <div id="historyContent">
+                <p style="text-align: center; color: var(--text-muted);">Loading your assessment history...</p>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeHistory()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        
+        // Initialize dashboard
+        async function initDashboard() {
+            // Load user from localStorage
+            const userStr = localStorage.getItem('user');
+            if (!userStr) {
+                window.location.href = '/signin.html';
+                return;
+            }
+            
+            currentUser = JSON.parse(userStr);
+            
+            // Hide any admin elements for regular users
+            hideAdminElementsForRegularUsers();
+            
+            // Update user info display
+            document.querySelector('.welcome-title').textContent = `Welcome back, ${currentUser.name}!`;
+            document.querySelector('.welcome-subtitle').textContent = `${currentUser.email} • Member since ${new Date(currentUser.createdDate).toLocaleDateString()}`;
+            
+            // Load dashboard stats from server
+            await loadDashboardStats();
+        }
+        
+        function hideAdminElementsForRegularUsers() {
+            // Hide any admin buttons or links that might exist
+            const adminElements = document.querySelectorAll('[href*="admin"], [onclick*="admin"], .admin-btn, .admin-link');
+            adminElements.forEach(element => {
+                element.style.display = 'none';
+            });
+            
+            // Also check for admin text in navigation elements
+            const navElements = document.querySelectorAll('a, button');
+            navElements.forEach(element => {
+                if (element.textContent.toLowerCase().includes('admin')) {
+                    element.style.display = 'none';
+                }
+            });
+        }
+        
+        async function loadDashboardStats() {
+            try {
+                // Get user's assessment count and other stats
+                const statsResponse = await fetch(`/api/users/${currentUser.userId}/stats`);
+                if (statsResponse.ok) {
+                    const stats = await statsResponse.json();
+                    document.getElementById('assessmentCount').textContent = stats.assessmentCount || 0;
+                    document.getElementById('daysActive').textContent = stats.daysActive || 0;
+                } else {
+                    // Fallback to basic counts
+                    document.getElementById('assessmentCount').textContent = 0;
+                    document.getElementById('daysActive').textContent = Math.ceil((new Date() - new Date(currentUser.createdDate)) / (1000 * 60 * 60 * 24));
+                }
+
+                // Get compatibility stats separately
+                try {
+                    const compatResponse = await fetch(`/api/compatibility/stats/${currentUser.userId}`);
+                    if (compatResponse.ok) {
+                        const compatStats = await compatResponse.json();
+                        document.getElementById('matchCount').textContent = compatStats.totalPotentialMatches || 0;
+                    } else {
+                        document.getElementById('matchCount').textContent = 0;
+                    }
+                } catch (compatError) {
+                    console.log('Compatibility stats not available yet:', compatError);
+                    document.getElementById('matchCount').textContent = 0;
+                }
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+                // Show basic info
+                document.getElementById('assessmentCount').textContent = 0;
+                document.getElementById('matchCount').textContent = 0;
+                document.getElementById('daysActive').textContent = Math.ceil((new Date() - new Date(currentUser.createdDate)) / (1000 * 60 * 60 * 24));
+            }
+        }
+        
+        function showAccountSettings() {
+            if (!currentUser) return;
+            
+            document.getElementById('userName').value = currentUser.name;
+            document.getElementById('userEmail').value = currentUser.email;
+            document.getElementById('accountModal').style.display = 'block';
+        }
+        
+        function closeAccountSettings() {
+            document.getElementById('accountModal').style.display = 'none';
+        }
+        
+        async function saveAccountSettings() {
+            if (!currentUser) return;
+            
+            const name = document.getElementById('userName').value;
+            const email = document.getElementById('userEmail').value;
+            const shareProfile = document.getElementById('shareProfile').checked;
+            
+            try {
+                const response = await fetch(`/api/users/${currentUser.userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        shareProfile: shareProfile
+                    })
+                });
+                
+                if (response.ok) {
+                    // Update local user data
+                    currentUser.name = name;
+                    currentUser.email = email;
+                    localStorage.setItem('user', JSON.stringify(currentUser));
+                    
+                    // Update display
+                    document.querySelector('.welcome-title').textContent = `Welcome back, ${currentUser.name}!`;
+                    document.querySelector('.welcome-subtitle').textContent = `${currentUser.email} • Member since ${new Date(currentUser.createdDate).toLocaleDateString()}`;
+                    
+                    alert('Settings saved successfully!');
+                    closeAccountSettings();
+                } else {
+                    alert('Error saving settings. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                alert('Error saving settings. Please try again.');
+            }
+        }
+        
+        // History functions
+        async function showHistory() {
+            document.getElementById('historyModal').style.display = 'block';
+            await loadHistory();
+        }
+        
+        function closeHistory() {
+            document.getElementById('historyModal').style.display = 'none';
+        }
+        
+        async function loadHistory() {
+            if (!currentUser) return;
+            
+            try {
+                const response = await fetch(`/api/users/${currentUser.userId}/assessments`);
+                if (response.ok) {
+                    const assessments = await response.json();
+                    
+                    if (assessments && assessments.length > 0) {
+                        const historyHtml = assessments.map(assessment => `
+                            <div class="history-item">
+                                <div class="history-info">
+                                    <h4>MBTI Type: ${assessment.mbtiType || 'N/A'}</h4>
+                                    <small>Completed: ${new Date(assessment.completedAt || assessment.createdDate).toLocaleDateString()}</small>
+                                </div>
+                                <div class="history-stats">
+                                    <div class="confidence-badge">${Math.round((assessment.confidence || 0) * 100)}% Confidence</div>
+                                </div>
+                            </div>
+                        `).join('');
+                        
+                        document.getElementById('historyContent').innerHTML = historyHtml;
+                    } else {
+                        document.getElementById('historyContent').innerHTML = `
+                            <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                                <p>No assessments found.</p>
+                                <a href="/index.html" class="btn btn-primary" style="margin-top: 1rem;">Take your first assessment</a>
+                            </div>
+                        `;
+                    }
+                } else {
+                    document.getElementById('historyContent').innerHTML = '<p style="color: var(--text-muted); text-align: center;">Unable to load assessment history.</p>';
+                }
+            } catch (error) {
+                console.error('Error loading history:', error);
+                document.getElementById('historyContent').innerHTML = '<p style="color: var(--text-muted); text-align: center;">Error loading assessment history.</p>';
+            }
+        }
+        
+        // Close modals when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        });
+        
+        // Initialize when page loads
+        window.addEventListener('load', initDashboard);
+    </script>
+</body>
+</html>
