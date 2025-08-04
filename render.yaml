@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: personality-assessment-api
+    env: dotnet
+    buildCommand: |
+      cd PersonalityAssessment.Api/PersonalityAssessment.Api
+      dotnet restore
+      dotnet publish -c Release -o out
+    startCommand: |
+      cd PersonalityAssessment.Api/PersonalityAssessment.Api/out
+      ./PersonalityAssessment.Api
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ASPNETCORE_URLS
+        value: http://0.0.0.0:10000
+    healthCheckPath: /health

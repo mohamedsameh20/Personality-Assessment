@@ -25,6 +25,19 @@ namespace PersonalityAssessment.Api
             // Add CORS for local development
             builder.Services.AddCors();
             
+            // Add health checks
+            builder.Services.AddHealthChecks();
+            
+            // Add response compression
+            builder.Services.AddResponseCompression(options =>
+            {
+                options.EnableForHttps = true;
+            });
+            
+            // Add memory cache
+            builder.Services.AddMemoryCache();
+            builder.Services.AddResponseCaching();
+            
             // Register our services
             builder.Services.AddScoped<IAssessmentService, AssessmentService>();
             builder.Services.AddScoped<IUserService, UserService>();
@@ -45,6 +58,12 @@ namespace PersonalityAssessment.Api
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            
+            // Use response compression
+            app.UseResponseCompression();
+            
+            // Use response caching
+            app.UseResponseCaching();
 
             // Enable CORS for local development
             app.UseCors(builder => builder
@@ -55,15 +74,45 @@ namespace PersonalityAssessment.Api
             // Enable default files (index.html)
             app.UseDefaultFiles();
             
-            // Enable static files
-            app.UseStaticFiles();
+            // Enable static files with caching
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                OnPrepareResponse = ctx =>
+                {
+                    // Cache static files for 1 day
+                    if (app.Environment.IsProduction())
+                    {
+                        ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=86400");
+                    }
+                }
+            });
 
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
 
+            // Add health check endpoint
+            app.MapHealthChecks("/health");
 
             app.MapControllers();
+            
+            // Auto-migrate database in production
+            if (app.Environment.IsProduction())
+            {
+                using (var scope = app.Services.CreateScope())
+                {
+                    try
+                    {
+                        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                        context.Database.Migrate();
+                    }
+                    catch (Exception ex)
+                    {
+                        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+                        logger.LogError(ex, "An error occurred while migrating the database.");
+                    }
+                }
+            }
 
             app.Run();
         }
